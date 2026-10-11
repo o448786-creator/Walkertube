@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALKER // VIDEO PROTOCOL</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 15px 30px;
+            background-color: rgba(11, 12, 16, 0.95);
+            border-bottom: 1px solid #1f2833;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+            text-decoration: none;
+        }
+
+        .main-container {
+            margin-top: 80px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            gap: 20px;
+        }
+
+        @media (min-width: 900px) {
+            .main-container {
+                flex-direction: row;
+            }
+        }
+
+        .video-player-area {
+            flex: 2;
+        }
+
+        /* Moldura Cyberpunk para o Player de Vídeo Nativo */
+        .video-wrapper {
+            position: relative;
+            border: 1px solid #45a29e;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+            background: #000;
+            width: 100%;
+            aspect-ratio: 16/9; /* Mantém a proporção perfeita automaticamente */
+        }
+
+        /* Estilo do Player de Vídeo Nativo do HTML */
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(31, 40, 51, 0.3);
+            border-left: 3px solid #66fcf1;
+        }
+
+        .video-title {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .video-desc {
+            font-size: 13px;
+            color: #45a29e;
+            line-height: 1.5;
+        }
+
+        .video-sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: #66fcf1;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .video-card {
+            display: flex;
+            gap: 10px;
+            background: rgba(26, 34, 43, 0.4);
+            border: 1px solid rgba(31, 40, 51, 0.5);
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .video-card:hover {
+            border-color: #66fcf1;
+            background: rgba(31, 40, 51, 0.6);
+            transform: translateX(2px);
+        }
+
+        .thumbnail {
+            width: 120px;
+            height: 68px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #45a29e;
+            flex-shrink: 0;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: bold;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .card-author {
+            font-size: 11px;
+            color: #45a29e;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">◢ 𝚠𝚊𝚕𝚔𝚎𝚛 // 𝚝𝚞𝚋𝚎 ◣</a>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- Player de Vídeo Nativo Atualizado -->
+        <div class="video-player-area">
+            <div class="video-wrapper">
+                <!-- Trocamos o iframe pela tag video com controles do navegador -->
+                <video id="main-video-player" controls autoplay muted>
+                    <source id="video-source" src="videos/video1.mp4" type="video/mp4">
+                    Seu navegador não suporta a reprodução de vídeos.
+                </video>
+            </div>
+            <div class="video-info">
+                <h1 class="video-title" id="player-title">Carregando protocolo...</h1>
+                <p class="video-desc" id="player-desc">Inicializando transmissão do arquivo local...</p>
+            </div>
+        </div>
+
+        <div class="video-sidebar">
+            <div class="sidebar-title">// Arquivos de Vídeo Locais</div>
+            <div id="playlist-container"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // BANCO DE DADOS DE VÍDEOS BAIXADOS (Modifique os nomes aqui!)
+        const VIDEOS_DATA = [
+            {
+                file: "Alan Walker - Darkside (feat. Au_Ra and Tomine Harket).mp4", // O caminho da pasta e nome do arquivo de vídeo que você baixou
+                title: "Darkside",
+                desc: "creat for alan walker.",
+                thumb: "Darkside.jpeg" // Uma foto de capa se você quiser colocar na pasta (opcional)
+            },
+            {
+                file: "Alan Walker, Sabrina Carpenter & Farruko  - On My Way.mp4",
+                title: "Alan Walker, Sabrina Carpenter & Farruko  - On My Way",
+                desc: "Segundo arquivo de transmissão local rodando direto do servidor do app.",
+                thumb: "On My Way.jpeg"
+            },
+            {
+                file: "Alan Walker, Ava Max - FATE (Official Lyric Video).mp4",
+                title: "Alan Walker, Ava Max - FATE (Official Lyric Video)",
+                desc: "Segundo arquivo de transmissão local rodando direto do servidor do app.",
+                thumb: "Fate.jpeg"
+            },
+            {
+                file: "Alan Walker - Alone.mp4",
+                title: "Alan Walker - Alone",
+                desc: "Segundo arquivo de transmissão local rodando direto do servidor do app.",
+                thumb: "alone.jpeg"
+            }
+        ];
+
+        const playlistContainer = document.getElementById('playlist-container');
+        const mainVideoPlayer = document.getElementById('main-video-player');
+        const videoSource = document.getElementById('video-source');
+        const playerTitle = document.getElementById('player-title');
+        const playerDesc = document.getElementById('player-desc');
+
+        // Função para trocar e reproduzir o vídeo baixado
+        function playVideo(index) {
+            const video = VIDEOS_DATA[index];
+            
+            // Altera o arquivo fonte do player e recarrega
+            videoSource.src = video.file;
+            mainVideoPlayer.load();
+            mainVideoPlayer.play();
+            
+            playerTitle.innerText = video.title;
+            playerDesc.innerText = video.desc;
+        }
+
+        // Função para construir a barra lateral
+        function renderPlaylist() {
+            playlistContainer.innerHTML = '';
+            VIDEOS_DATA.forEach((video, index) => {
+                const card = document.createElement('div');
+                card.classList.add('video-card');
+                card.onclick = () => playVideo(index);
+
+                // Se não tiver imagem de capa, ele usa um fundo preto básico na miniatura
+                const backgroundStyle = video.thumb ? `background-image: url('${video.thumb}')` : 'background-color: #000;';
+
+                card.innerHTML = `
+                    <div class="thumbnail" style="${backgroundStyle}"></div>
+                    <div class="card-info">
+                        <div class="card-title">${video.title}</div>
+                        <div class="card-author">ARQUIVO INTERNO</div>
+                    </div>
+                `;
+                playlistContainer.appendChild(card);
+            });
+        }
+
+        // Inicia o primeiro vídeo automaticamente ao carregar a página
+        if(VIDEOS_DATA.length > 0) {
+            playVideo(0);
+        }
+        renderPlaylist();
+    </script>
+</body>
+</html>
