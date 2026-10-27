@@ -1,82 +1,105 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>WALKER // VIDEO PROTOCOL</title>
-    <link rel="icon" href="WALKER TUBE.JPEG">
+
+    <link rel="icon" href="WALKER%20TUBE.JPEG" type="image/jpeg">
+
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Courier, monospace, Arial, sans-serif;
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        :root {
+            --bg: #0b0c10;
+            --panel: #111820;
+            --border: #1f2833;
+            --blue: #66fcf1;
+            --green: #45a29e;
+            --white: #ffffff;
+            --text: #c5c6c7;
         }
 
         body {
-            background-color: #0b0c10;
-            color: #c5c6c7;
-            display: flex;
-            flex-direction: column;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
         }
 
         header {
             width: 100%;
-            padding: 15px 30px;
-            background-color: rgba(11, 12, 16, 0.95);
-            border-bottom: 1px solid #1f2833;
+            min-height: 76px;
+            padding: 14px 24px;
+            background: rgba(11, 12, 16, 0.97);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: fixed;
+            gap: 18px;
+            position: sticky;
             top: 0;
             z-index: 100;
         }
 
         .logo {
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+            color: var(--white);
             text-decoration: none;
+            font-size: clamp(15px, 2vw, 22px);
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+            white-space: nowrap;
+        }
+
+        .search-box {
+            width: min(100%, 340px);
+            padding: 12px 14px;
+            color: var(--white);
+            background: #101820;
+            border: 1px solid var(--green);
+            border-radius: 5px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 10px rgba(102, 252, 241, 0.2);
         }
 
         .main-container {
-            margin-top: 80px;
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            max-width: 1200px;
+            gap: 22px;
+            max-width: 1400px;
             width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-            gap: 20px;
-        }
-
-        @media (min-width: 900px) {
-            .main-container {
-                flex-direction: row;
-            }
+            margin: 0 auto;
+            padding: 24px;
         }
 
         .video-player-area {
             flex: 2;
+            min-width: 0;
         }
 
-        /* Moldura Cyberpunk para o Player de Vídeo Nativo */
         .video-wrapper {
-            position: relative;
-            border: 1px solid #45a29e;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
-            background: #000;
             width: 100%;
-            aspect-ratio: 16/9; /* Mantém a proporção perfeita automaticamente */
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border: 1px solid var(--green);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.12);
+            overflow: hidden;
         }
 
-        /* Estilo do Player de Vídeo Nativo do HTML */
         .video-wrapper video {
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -84,233 +107,469 @@
 
         .video-info {
             margin-top: 15px;
-            padding: 15px;
-            background: rgba(31, 40, 51, 0.3);
-            border-left: 3px solid #66fcf1;
+            padding: 18px;
+            background: rgba(31, 40, 51, 0.35);
+            border-left: 3px solid var(--blue);
+            overflow-wrap: anywhere;
         }
 
         .video-title {
-            font-size: 20px;
-            color: #ffffff;
-            margin-bottom: 5px;
+            color: var(--white);
+            font-size: clamp(18px, 2vw, 24px);
+            margin-bottom: 10px;
         }
 
         .video-desc {
+            color: var(--green);
             font-size: 13px;
-            color: #45a29e;
-            line-height: 1.5;
+            line-height: 1.7;
         }
 
         .video-sidebar {
             flex: 1;
+            min-width: 0;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .sidebar-title {
+            color: var(--blue);
             font-size: 14px;
-            letter-spacing: 2px;
-            color: #66fcf1;
-            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 5px;
         }
 
         .video-card {
+            width: 100%;
             display: flex;
-            gap: 10px;
-            background: rgba(26, 34, 43, 0.4);
-            border: 1px solid rgba(31, 40, 51, 0.5);
-            padding: 8px;
+            align-items: center;
+            gap: 12px;
+            padding: 9px;
+            text-align: left;
+            color: var(--text);
+            background: rgba(26, 34, 43, 0.6);
+            border: 1px solid var(--border);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: border-color 0.2s, background 0.2s;
         }
 
-        .video-card:hover {
-            border-color: #66fcf1;
-            background: rgba(31, 40, 51, 0.6);
-            transform: translateX(2px);
+        .video-card:hover,
+        .video-card:focus-visible {
+            border-color: var(--blue);
+            background: #17242d;
+            outline: none;
+        }
+
+        .video-card.active {
+            border-color: var(--blue);
+            box-shadow: inset 3px 0 var(--blue);
         }
 
         .thumbnail {
             width: 120px;
-            height: 68px;
+            aspect-ratio: 16 / 9;
+            flex-shrink: 0;
+            background-color: #000;
             background-size: cover;
             background-position: center;
-            border: 1px solid #45a29e;
-            flex-shrink: 0;
+            border: 1px solid var(--green);
         }
 
         .card-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            min-width: 0;
         }
 
         .card-title {
+            color: var(--white);
             font-size: 13px;
-            color: #ffffff;
             font-weight: bold;
-            line-height: 1.3;
-            margin-bottom: 4px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         .card-author {
-            font-size: 11px;
-            color: #45a29e;
+            margin-top: 6px;
+            color: var(--green);
+            font-size: 10px;
+            letter-spacing: 1px;
         }
-        /* Estilo do campo de busca */
-    .search-box {
-      width: 100%;
-      max-width: 400px;
-      padding: 10px;
-      margin-bottom: 20px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
 
-    /* Estilo da lista */
-    .item-list {
-      list-style: none;
-      padding: 0;
-      max-width: 400px;
-    }
+        .empty-message,
+        .status-message {
+            padding: 16px;
+            color: var(--green);
+            border: 1px dashed var(--border);
+            font-size: 13px;
+            line-height: 1.6;
+        }
 
-    .item-list li {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
+        .status-message {
+            margin-top: 10px;
+        }
 
-    /* Classe que esconde os itens que não servem na busca */
-    .hidden {
-      display: none !important;
-    }
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (min-width: 900px) {
+            .main-container {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .video-sidebar {
+                max-width: 420px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 12px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .logo {
+                text-align: center;
+                white-space: normal;
+            }
+
+            .search-box {
+                width: 100%;
+                max-width: none;
+            }
+
+            .main-container {
+                padding: 14px;
+                gap: 20px;
+            }
+
+            .video-info {
+                padding: 13px;
+            }
+
+            .thumbnail {
+                width: 105px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <header>
-        <a href="#" class="logo">◢ 𝚠𝚊𝚕𝚔𝚎𝚛 // 𝚝𝚞𝚋𝚎 ◣</a>
-          <input type="text" id="searchBar" class="search-box" placeholder="Digite para filtrar...">
+        <a href="#" class="logo">◢ WALKER // TUBE ◣</a>
+
+        <input
+            type="search"
+            id="searchBar"
+            class="search-box"
+            placeholder="Pesquisar vídeos..."
+            aria-label="Pesquisar vídeos"
+            autocomplete="off"
+        >
     </header>
 
-    <div class="main-container">
-        
-        <!-- Player de Vídeo Nativo Atualizado -->
-        <div class="video-player-area">
+    <main class="main-container">
+
+        <section class="video-player-area" aria-label="Reprodutor de vídeo">
+
             <div class="video-wrapper">
-                <!-- Trocamos o iframe pela tag video com controles do navegador -->
-                <video id="main-video-player" controls autoplay muted>
-                    <source id="video-source" src="videos/video1.mp4" type="video/mp4">
+                <video
+                    id="main-video-player"
+                    controls
+                    autoplay
+                    muted
+                    playsinline
+                    preload="metadata"
+                >
                     Seu navegador não suporta a reprodução de vídeos.
                 </video>
             </div>
+
             <div class="video-info">
-                <h1 class="video-title" id="player-title">Carregando protocolo...</h1>
-                <p class="video-desc" id="player-desc">Inicializando transmissão do arquivo local...</p>
+                <h1 class="video-title" id="player-title">
+                    WALKER // TUBE
+                </h1>
+
+                <p class="video-desc" id="player-desc">
+                    Selecione um arquivo para iniciar a transmissão.
+                </p>
+
+                <p
+                    class="status-message"
+                    id="player-status"
+                    role="status"
+                    aria-live="polite"
+                    hidden
+                ></p>
             </div>
-        </div>
 
-        <div class="video-sidebar">
-            <div class="sidebar-title">// Arquivos de Vídeo Locais</div>
+        </section>
+
+        <aside class="video-sidebar">
+
+            <h2 class="sidebar-title">// ARQUIVOS DE VÍDEO</h2>
+
             <div id="playlist-container"></div>
-        </div>
 
-    </div>
+            <p id="empty-message" class="empty-message" hidden>
+                Nenhum vídeo encontrado. Tente outra pesquisa.
+            </p>
+
+        </aside>
+
+    </main>
 
     <script>
-        // BANCO DE DADOS DE VÍDEOS BAIXADOS (Modifique os nomes aqui!)
+        // ==========================================
+        // BANCO DE DADOS DOS VÍDEOS
+        // ==========================================
+        // Os vídeos e as imagens devem estar nos
+        // caminhos indicados nos campos file e thumb.
+
         const VIDEOS_DATA = [
             {
-                file: "Alan Walker - Darkside (feat. Au_Ra and Tomine Harket).mp4", // O caminho da pasta e nome do arquivo de vídeo que você baixou
-                title: "Darkside",
-                desc: "creat for alan walker.",
-                thumb: "Darkside.jpeg" // Uma foto de capa se você quiser colocar na pasta (opcional)
+                file: "Alan Walker - Darkside (feat. Au_Ra and Tomine Harket).mp4",
+                title: "Alan Walker - Darkside",
+                desc: "Darkside — Alan Walker, Au/Ra e Tomine Harket.",
+                thumb: "Darkside.jpeg"
             },
             {
                 file: "Alan Walker, Sabrina Carpenter & Farruko  - On My Way.mp4",
-                title: "Alan Walker, Sabrina Carpenter & Farruko  - On My Way",
-                desc: "Segundo arquivo de transmissão local rodando direto do servidor do app.",
+                title: "Alan Walker, Sabrina Carpenter & Farruko - On My Way",
+                desc: "On My Way — Alan Walker, Sabrina Carpenter e Farruko.",
                 thumb: "On My Way.jpeg"
             },
             {
                 file: "Alan Walker, Ava Max - FATE (Official Lyric Video).mp4",
-                title: "Alan Walker, Ava Max - FATE (Official Lyric Video)",
-                desc: "Segundo arquivo de transmissão local rodando direto do servidor do app.",
+                title: "Alan Walker, Ava Max - FATE",
+                desc: "FATE — vídeo de Alan Walker e Ava Max.",
                 thumb: "Fate.jpeg"
             },
             {
                 file: "Alan Walker - Alone.mp4",
                 title: "Alan Walker - Alone",
-                desc: "Segundo arquivo de transmissão local rodando direto do servidor do app.",
+                desc: "Alone — Alan Walker.",
                 thumb: "alone.jpeg"
             }
         ];
 
-        const playlistContainer = document.getElementById('playlist-container');
-        const mainVideoPlayer = document.getElementById('main-video-player');
-        const videoSource = document.getElementById('video-source');
-        const playerTitle = document.getElementById('player-title');
-        const playerDesc = document.getElementById('player-desc');
+        // ==========================================
+        // ELEMENTOS DA PÁGINA
+        // ==========================================
 
-        // Função para trocar e reproduzir o vídeo baixado
+        const playlistContainer =
+            document.getElementById("playlist-container");
+
+        const mainVideoPlayer =
+            document.getElementById("main-video-player");
+
+        const playerTitle =
+            document.getElementById("player-title");
+
+        const playerDesc =
+            document.getElementById("player-desc");
+
+        const playerStatus =
+            document.getElementById("player-status");
+
+        const searchBar =
+            document.getElementById("searchBar");
+
+        const emptyMessage =
+            document.getElementById("empty-message");
+
+        let currentVideoIndex = -1;
+
+        // ==========================================
+        // MENSAGENS DO PLAYER
+        // ==========================================
+
+        function showStatus(message) {
+            playerStatus.textContent = message;
+            playerStatus.hidden = !message;
+        }
+
+        // ==========================================
+        // REPRODUZIR UM VÍDEO
+        // ==========================================
+
         function playVideo(index) {
             const video = VIDEOS_DATA[index];
-            
-            // Altera o arquivo fonte do player e recarrega
-            videoSource.src = video.file;
+
+            if (!video) return;
+
+            currentVideoIndex = index;
+
+            playerTitle.textContent = video.title;
+            playerDesc.textContent = video.desc;
+
+            showStatus("Carregando arquivo de vídeo...");
+
+            mainVideoPlayer.pause();
+            mainVideoPlayer.src = video.file;
             mainVideoPlayer.load();
-            mainVideoPlayer.play();
-            
-            playerTitle.innerText = video.title;
-            playerDesc.innerText = video.desc;
+
+            // Atualiza o destaque da lista.
+            document.querySelectorAll(".video-card").forEach(card => {
+                const isActive =
+                    Number(card.dataset.index) === index;
+
+                card.classList.toggle("active", isActive);
+
+                if (isActive) {
+                    card.setAttribute("aria-current", "true");
+                } else {
+                    card.removeAttribute("aria-current");
+                }
+            });
+
+            // Alguns navegadores bloqueiam o autoplay.
+            // Nesse caso, o usuário pode apertar Play.
+            const playPromise = mainVideoPlayer.play();
+
+            if (playPromise && typeof playPromise.catch === "function") {
+                playPromise.catch(() => {
+                    showStatus(
+                        "Vídeo selecionado. Pressione Play para reproduzir."
+                    );
+                });
+            }
         }
 
-        // Função para construir a barra lateral
+        // ==========================================
+        // EVENTOS DO PLAYER
+        // ==========================================
+
+        mainVideoPlayer.addEventListener("loadeddata", () => {
+            showStatus("");
+        });
+
+        mainVideoPlayer.addEventListener("playing", () => {
+            showStatus("");
+        });
+
+        mainVideoPlayer.addEventListener("waiting", () => {
+            showStatus("Carregando vídeo...");
+        });
+
+        mainVideoPlayer.addEventListener("error", () => {
+            if (currentVideoIndex !== -1) {
+                showStatus(
+                    "Não foi possível carregar o vídeo. Verifique o nome, " +
+                    "o caminho do arquivo e o formato."
+                );
+            }
+        });
+
+        // ==========================================
+        // CONSTRUIR A LISTA DE VÍDEOS
+        // ==========================================
+
         function renderPlaylist() {
-            playlistContainer.innerHTML = '';
+            playlistContainer.replaceChildren();
+
             VIDEOS_DATA.forEach((video, index) => {
-                const card = document.createElement('div');
-                card.classList.add('video-card');
-                card.onclick = () => playVideo(index);
+                const card = document.createElement("button");
 
-                // Se não tiver imagem de capa, ele usa um fundo preto básico na miniatura
-                const backgroundStyle = video.thumb ? `background-image: url('${video.thumb}')` : 'background-color: #000;';
+                card.type = "button";
+                card.className = "video-card";
+                card.dataset.index = String(index);
 
-                card.innerHTML = `
-                    <div class="thumbnail" style="${backgroundStyle}"></div>
-                    <div class="card-info">
-                        <div class="card-title">${video.title}</div>
-                        <div class="card-author">ARQUIVO INTERNO</div>
-                    </div>
-                `;
+                card.setAttribute(
+                    "aria-label",
+                    "Reproduzir " + video.title
+                );
+
+                const thumbnail = document.createElement("div");
+                thumbnail.className = "thumbnail";
+                thumbnail.setAttribute("aria-hidden", "true");
+
+                if (video.thumb) {
+                    thumbnail.style.backgroundImage =
+                        'url("' +
+                        video.thumb.replace(/["\\]/g, "\\$&") +
+                        '")';
+                }
+
+                const info = document.createElement("div");
+                info.className = "card-info";
+
+                const title = document.createElement("div");
+                title.className = "card-title";
+                title.textContent = video.title;
+
+                const author = document.createElement("div");
+                author.className = "card-author";
+                author.textContent = "ARQUIVO INTERNO";
+
+                info.append(title, author);
+                card.append(thumbnail, info);
+
+                card.addEventListener("click", () => {
+                    playVideo(index);
+                });
+
                 playlistContainer.appendChild(card);
             });
+
+            filterVideos();
         }
 
-        // Inicia o primeiro vídeo automaticamente ao carregar a página
-        if(VIDEOS_DATA.length > 0) {
-            playVideo(0);
+        // ==========================================
+        // PESQUISA FUNCIONAL
+        // ==========================================
+
+        function filterVideos() {
+            const query = searchBar.value
+                .trim()
+                .toLocaleLowerCase("pt-BR");
+
+            const cards =
+                playlistContainer.querySelectorAll(".video-card");
+
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const index = Number(card.dataset.index);
+                const video = VIDEOS_DATA[index];
+
+                const searchableText =
+                    video.title + " " + video.desc;
+
+                const matches = searchableText
+                    .toLocaleLowerCase("pt-BR")
+                    .includes(query);
+
+                card.hidden = !matches;
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            emptyMessage.hidden = visibleCount !== 0;
         }
+
+        searchBar.addEventListener("input", filterVideos);
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+
         renderPlaylist();
-            const searchBar = document.getElementById('searchBar');
-    const items = document.querySelectorAll('#itemList .item');
 
-    searchBar.addEventListener('input', (e) => {
-      const searchFilter = e.target.value.toLowerCase();
-
-      items.forEach(item => {
-        const itemText = item.textContent.toLowerCase();
-        
-        // Verifica se o texto do item contém o que foi digitado
-        if (itemText.includes(searchFilter)) {
-          item.classList.remove('hidden');
+        if (VIDEOS_DATA.length > 0) {
+            playVideo(0);
         } else {
-          item.classList.add('hidden');
+            playerTitle.textContent = "Nenhum vídeo cadastrado";
+            playerDesc.textContent =
+                "Adicione vídeos à lista VIDEOS_DATA no código.";
         }
-      });
-    });
     </script>
+
 </body>
 </html>
