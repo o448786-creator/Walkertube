@@ -159,6 +159,33 @@
             font-size: 11px;
             color: #45a29e;
         }
+        /* Estilo do campo de busca */
+    .search-box {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    /* Estilo da lista */
+    .item-list {
+      list-style: none;
+      padding: 0;
+      max-width: 400px;
+    }
+
+    .item-list li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    /* Classe que esconde os itens que não servem na busca */
+    .hidden {
+      display: none !important;
+    }
     </style>
 </head>
 <body>
@@ -266,6 +293,23 @@
             playVideo(0);
         }
         renderPlaylist();
+            const searchBar = document.getElementById('searchBar');
+    const items = document.querySelectorAll('#itemList .item');
+
+    searchBar.addEventListener('input', (e) => {
+      const searchFilter = e.target.value.toLowerCase();
+
+      items.forEach(item => {
+        const itemText = item.textContent.toLowerCase();
+        
+        // Verifica se o texto do item contém o que foi digitado
+        if (itemText.includes(searchFilter)) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
     </script>
 </body>
 </html>
